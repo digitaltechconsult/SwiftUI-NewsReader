@@ -23,36 +23,38 @@ struct DetailView: View {
     var body: some View {
         NavigationView {
             WebView(urlString: url)
-                .navigationBarItems(trailing: Button(action: {
-                    actionSheet(url: self.url)
-                }, label: {
-                    Image(systemName: "square.and.arrow.up")
-                        .resizable()
-                        .frame(width: 25, height: 30)
-                        .foregroundColor(.blue)
-                }))
+                .navigationBarItems(trailing:
+                                        HStack {
+                                            Button(action: {actionSheet(url: self.url)
+                                            }, label: {
+                                                Image(systemName: "square.and.arrow.up")
+                                                    .resizable()
+                                                    .frame(width: 25, height: 30)
+                                                    .foregroundColor(.blue)
+                                            })})
         }
+        
         .edgesIgnoringSafeArea(.all)
     }
 }
+
+struct WebView: UIViewRepresentable {
+    let urlString: String?
     
-    struct WebView: UIViewRepresentable {
-        let urlString: String?
-        
-        func makeUIView(context: Context) -> WKWebView {
-            return WKWebView()
-        }
-        
-        func updateUIView(_ uiView: WKWebView, context: Context) {
-            if let urlString = urlString, let url = URL(string: urlString) {
-                let request = URLRequest(url: url)
-                uiView.load(request)
-            }
-        }
+    func makeUIView(context: Context) -> WKWebView {
+        return WKWebView()
     }
     
-    struct DetailView_Previews: PreviewProvider {
-        static var previews: some View {
-            DetailView(url: "https://www.google.ro/")
+    func updateUIView(_ uiView: WKWebView, context: Context) {
+        if let urlString = urlString, let url = URL(string: urlString) {
+            let request = URLRequest(url: url)
+            uiView.load(request)
         }
     }
+}
+
+struct DetailView_Previews: PreviewProvider {
+    static var previews: some View {
+        DetailView(url: "https://www.google.ro/")
+    }
+}
